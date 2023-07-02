@@ -15,13 +15,10 @@ int angle = 0;
 void loadImages();
 
 void initSDL() {
-    int rendererFlags, windowFlags;
-    rendererFlags = SDL_RENDERER_ACCELERATED;
-    windowFlags = 0;
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
     window = SDL_CreateWindow("test", SDL_WINDOWPOS_UNDEFINED, 
     SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-    renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_PRESENTVSYNC);
+    renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
     loadImages();
     if ( !window ) {
 	printf("%s",SDL_GetError());
@@ -38,6 +35,7 @@ void loadImages() {
     if (image == NULL) image = SDL_LoadBMP("test.bmp");
     printf("%s",SDL_GetError());
     texture = SDL_CreateTextureFromSurface(renderer, image);
+    SDL_FreeSurface(image);
     printf("%s",SDL_GetError());
 }
 
@@ -45,7 +43,6 @@ void destroyWindow() {
     running = 0;
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
-    SDL_FreeSurface(image);
     SDL_DestroyTexture(texture);
     SDL_Quit();
 }
