@@ -8,7 +8,7 @@ Also builds for Webassembly with emscripten.
 
 Building:
 
-$ git clone https://github.com/tjhexf/sdl2test.git
+$ git clone --recursive https://github.com/tjhexf/sdl2test.git
 
 $ cd sdl2test
 
