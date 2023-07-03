@@ -2,29 +2,21 @@
 #include "defs.h"
 #include <string.h>
 #include <stdio.h>
+#include "init.h"
 
-SDL_Window *window = NULL;
-SDL_Renderer *renderer = NULL;
-SDL_Event event;
 
-SDL_Surface *image;
-SDL_Texture *texture;
-SDL_Rect rect;
-int angle = 0;
-
-void loadImages();
 
 void initSDL() {
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
     window = SDL_CreateWindow("test", SDL_WINDOWPOS_UNDEFINED, 
     SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    
     renderer = SDL_CreateRenderer(window,-1,SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
+    printf("%s",SDL_GetError());
     loadImages();
     if ( !window ) {
 	printf("%s",SDL_GetError());
     }
-
-    
 
     running = 1;
 
@@ -37,6 +29,10 @@ void loadImages() {
     texture = SDL_CreateTextureFromSurface(renderer, image);
     SDL_FreeSurface(image);
     printf("%s",SDL_GetError());
+
+    rect.h = 400;
+    rect.w = 400;
+
 }
 
 void destroyWindow() {
@@ -52,17 +48,15 @@ void render() {
 
         SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255);
 
-        rect.w = 200;
-        rect.h = 200;
-
-        rect.x = (SCREEN_WIDTH / 2) - rect.w/2;
-        rect.y = (SCREEN_HEIGHT / 2) - rect.h/2;
-
-        angle++;
-
-        SDL_RenderCopyEx(renderer, texture, NULL, &rect, angle, NULL, SDL_FLIP_NONE);
+        SDL_RenderCopyEx(renderer, texture, NULL, &rect, 0, NULL, SDL_FLIP_NONE);
         printf("%s",SDL_GetError());
         SDL_RenderPresent(renderer);
+}
+
+void genParticle() {
+    SDL_GetMouseState(&rect.x, &rect.y);
+    rect.x -= rect.w / 2;
+    rect.y -= rect.h / 2;
 }
 
 void input() {
@@ -70,5 +64,12 @@ void input() {
         if (event.type == SDL_QUIT) {
             destroyWindow();
         }
+        if (event.type == SDL_MOUSEBUTTONDOWN) {
+            held = 1;
+        }
+        if (event.type == SDL_MOUSEBUTTONUP) {
+            held = 0;
+        }
     }
+    if (held) genParticle();
 }

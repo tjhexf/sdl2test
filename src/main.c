@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include "../SDL/include/SDL.h"
-#include "init.h"
+#include "defs.h"
 
 
 int running;
